@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     @user = User.new(user_params)
 
     if @user.valid?
-      wsclient = Api::WorkShare::Session.new(@user.username, @user.password)
+      wsclient = Api::WorkShare::V1::Session.new(@user.username, @user.password)
       if wsclient.authorize()
         session[:workshare_session] = wsclient.dump_session
         redirect_to reports_url
