@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
 
   def index
     wsclient = Api::WorkShare::V1::Session.restore(session[:workshare_session])
-
+    @report = wsclient.all_files
   end
 
   def show

@@ -28,6 +28,7 @@ gem 'spring',        group: :development
 
 #gem 'rest-client', require: 'rest_client'
 gem 'faraday'
+gem 'faraday-cookie_jar'
 
 gem 'figaro'
 

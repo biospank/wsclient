@@ -7,6 +7,21 @@ RSpec.describe Api::WorkShare::V1::Session, :type => :lib do
     end
   end
   
+  describe "restore" do
+    let(:valid_session) {
+      build(:wsession)
+    }
+
+    it "return an instance of an authorized Api::WorkShare::V1::Session" do
+      valid_session.authorize
+      serialized_session = valid_session.dump_session
+      session = Api::WorkShare::V1::Session.restore(serialized_session)
+      expect(session).to be_an_instance_of(Api::WorkShare::V1::Session)
+      expect(session).to be_authorized
+    end
+    
+  end
+
   describe "new" do
     it "create a new session" do
       key = 'test_key'
@@ -25,10 +40,10 @@ RSpec.describe Api::WorkShare::V1::Session, :type => :lib do
         build(:wsession)
       }
 
-      it "return true" do
-        expect(valid_session.authorized?).to be false
+      it "to be authorized" do
         expect(valid_session.authorize).to be true 
         expect(valid_session.authorized?).to be true
+#        valid_session.logout
       end
     end
 
@@ -37,23 +52,41 @@ RSpec.describe Api::WorkShare::V1::Session, :type => :lib do
         build(:wsession, key: 'key', secret: 'secret')
       }
 
-      it "return false" do
-        expect(invalid_session.authorized?).to be false
-        expect(invalid_session.authorize).to be false 
+      it "raise error" do
+        expect {
+          invalid_session.authorize
+        }.to raise_error(Api::Errors::AuthorizationError)
         expect(invalid_session.authorized?).to be false
       end
     end
   end
   
-  describe "restore" do
-    it "return an instance of Api::WorkShare::V1::Session" do
-      serialized_session = {:consumer_key => 'key', :consumer_password => 'secret'}.to_yaml
-      session = Api::WorkShare::V1::Session.restore(serialized_session)
-      expect(session).to be_an_instance_of(Api::WorkShare::V1::Session)
-    end
-    
-    it "return an authenticated session" do
-      
+  describe "all_files" do
+    describe "with valid credentials" do 
+      let(:valid_session) {
+        build(:wsession)
+      }
+
+      it "return an array of files metadata" do
+        expect(valid_session.authorize).to be true
+        expect(valid_session.all_files).to be_an(Array)
+      end
+    end    
+
+    describe "with invalid credentials" do
+      let(:invalid_session) {
+        build(:wsession, key: 'key', secret: 'secret')
+      }
+
+      it "raise error" do
+        expect {
+          invalid_session.authorize
+        }.to raise_error(Api::Errors::AuthorizationError)
+        expect {
+          invalid_session.all_files
+        }.to raise_error(Api::Errors::AuthorizationError)
+      end
     end
   end
+  
 end

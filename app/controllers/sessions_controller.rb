@@ -9,10 +9,11 @@ class SessionsController < ApplicationController
 
     if @user.valid?
       wsclient = Api::WorkShare::V1::Session.new(@user.username, @user.password)
-      if wsclient.authorize()
+      begin 
+        wsclient.authorize()
         session[:workshare_session] = wsclient.dump_session
         redirect_to reports_url
-      else
+      rescue => e
         flash.now[:warning] = "Authentication failed"
         render "new"
       end
