@@ -23,7 +23,7 @@ module Api
             builder.use     Errors::WSError       # Include custom middleware
             builder.adapter  Faraday.default_adapter
           end
-          
+					
         end
 
         def authorize()
@@ -36,13 +36,14 @@ module Api
             
             @serialized_session = JSON.parse(response.body).merge({
               "consumer_key" => @key,
-              "consumer_secret" => @secret
+              "consumer_secret" => @secret,
+							"set_cookie" => response.env[:response_headers]["Set-Cookie"]
             })
 
           rescue Api::Errors::AuthorizationError
             raise
-          rescue Faraday::ClientError => ce
-            raise
+#          rescue Faraday::ClientError => ce
+#            raise
           end
 
           return true
@@ -69,6 +70,7 @@ module Api
           begin
             response = @conn.get do |req|
               req.url '/files.json'
+							req.headers["Cookie"] = @serialized_session["set_cookie"] if @serialized_session
             end
 
           rescue Api::Errors::AuthorizationError
@@ -79,7 +81,7 @@ module Api
 
         end
 
-        def dump_session()
+        def dump()
           @serialized_session.to_yaml
         end
 
@@ -89,9 +91,7 @@ module Api
 
         def self.restore(data)
           serialized_session = YAML.load(StringIO.new(data))
-          new_session = self.new(serialized_session["consumer_key"], serialized_session["consumer_secret"], serialized_session)
-          new_session.authorize
-          new_session
+					self.new(serialized_session["consumer_key"], serialized_session["consumer_secret"], serialized_session)
         end
         
       end

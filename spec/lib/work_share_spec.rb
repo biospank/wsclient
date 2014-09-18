@@ -14,10 +14,10 @@ RSpec.describe Api::WorkShare::V1::Session, :type => :lib do
 
     it "return an instance of an authorized Api::WorkShare::V1::Session" do
       valid_session.authorize
-      serialized_session = valid_session.dump_session
-      session = Api::WorkShare::V1::Session.restore(serialized_session)
-      expect(session).to be_an_instance_of(Api::WorkShare::V1::Session)
-      expect(session).to be_authorized
+      serialized_session = valid_session.dump
+      new_session = Api::WorkShare::V1::Session.restore(serialized_session)
+      expect(new_session).to be_an_instance_of(Api::WorkShare::V1::Session)
+      expect(new_session).to be_authorized
     end
     
   end
@@ -43,7 +43,6 @@ RSpec.describe Api::WorkShare::V1::Session, :type => :lib do
       it "to be authorized" do
         expect(valid_session.authorize).to be true 
         expect(valid_session.authorized?).to be true
-#        valid_session.logout
       end
     end
 
@@ -56,20 +55,23 @@ RSpec.describe Api::WorkShare::V1::Session, :type => :lib do
         expect {
           invalid_session.authorize
         }.to raise_error(Api::Errors::AuthorizationError)
+				
         expect(invalid_session.authorized?).to be false
       end
     end
   end
   
   describe "all_files" do
-    describe "with valid credentials" do 
+    describe "with a restored session" do 
       let(:valid_session) {
         build(:wsession)
       }
 
       it "return an array of files metadata" do
-        expect(valid_session.authorize).to be true
-        expect(valid_session.all_files).to be_an(Array)
+				valid_session.authorize
+				serialized_session = valid_session.dump
+				session = Api::WorkShare::V1::Session.restore(serialized_session)
+				expect(valid_session.all_files).to be_an(Array)
       end
     end    
 
@@ -82,6 +84,7 @@ RSpec.describe Api::WorkShare::V1::Session, :type => :lib do
         expect {
           invalid_session.authorize
         }.to raise_error(Api::Errors::AuthorizationError)
+				
         expect {
           invalid_session.all_files
         }.to raise_error(Api::Errors::AuthorizationError)

@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
       wsclient = Api::WorkShare::V1::Session.new(@user.username, @user.password)
       begin 
         wsclient.authorize()
-        session[:workshare_session] = wsclient.dump_session
+        session[:workshare_session] = wsclient.dump
         redirect_to reports_url
       rescue => e
         flash.now[:warning] = "Authentication failed"

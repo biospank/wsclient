@@ -4,7 +4,7 @@ RSpec.describe ReportsController, :type => :controller do
   let(:valid_session) {
     wsession = build(:wsession)
     wsession.authorize
-    {workshare_session: wsession.dump_session}
+    {workshare_session: wsession.dump}
   }
 
   let(:invalid_session) {
