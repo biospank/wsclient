@@ -8,8 +8,8 @@ FactoryGirl.define do
   end
   
   factory :wsuser, class: User do
-    username { 'fabio.petrucci@gmail.com' }
-    password { 'workshare9571' }
+    username ENV['WORKSHARE_APP_KEY']
+    password ENV['WORKSHARE_APP_SECRET']
   end
   
 end

@@ -4,8 +4,8 @@ require 'faker'
 FactoryGirl.define do
   factory :wsession, class: Api::WorkShare::V1::Session do
     ignore do
-      key 'fabio.petrucci@gmail.com'
-      secret 'workshare9571'
+      key ENV['WORKSHARE_APP_KEY']
+      secret ENV['WORKSHARE_APP_SECRET']
     end
     
     initialize_with { new(key, secret) }
