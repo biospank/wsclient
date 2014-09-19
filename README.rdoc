@@ -3,6 +3,7 @@
 This is a minimal implementation of Workshare's client api
 
 * Configuration
+
   to launch rspec test you need to configure application.yml with following env variables
 
   WORKSHARE_APP_UID: <app_uid>
