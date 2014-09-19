@@ -1,4 +1,4 @@
-== README
+== WSClient
 
 This is a minimal implementation of Workshare's client api
 
