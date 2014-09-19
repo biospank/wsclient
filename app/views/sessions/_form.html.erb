@@ -1,17 +1,40 @@
-<%= form_for(@user, url: sessions_path) do |f| %>
-  <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this session from being saved:</h2>
-
-      <ul>
-      <% @user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<h4 style="border-bottom: 1px solid #c5c5c5;">
+				<i class="glyphicon glyphicon-user">
+				</i>
+				WorkShare Account Access
+			</h4>
+			<div style="padding: 20px;" id="form-olvidado">
+				<%= form_for(@user, url: sessions_path) do |f| %>
+					<fieldset>
+						<div class="form-group input-group">
+							<span class="input-group-addon">
+								@
+							</span>
+							<%= f.email_field :username, class: 'form-control', placeholder: 'Email', required: '', autofocus: '' %>
+<!--							<input class="form-control" placeholder="Email" name="email" type="email" required="" autofocus="">-->
+						</div>
+						<div class="form-group input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-lock">
+								</i>
+							</span>
+							<%= f.password_field :password, class: 'form-control', placeholder: 'Password', value: '', required: '' %>
+<!--							<input class="form-control" placeholder="Password" name="password" type="password" value="" required="">-->
+						</div>
+						<div class="form-group">
+							<%= f.button 'Access', class: 'btn btn-primary btn-block' %>
+<!--
+							<button type="submit" class="btn btn-primary btn-block">
+								Access
+							</button>
+-->
+						</div>
+					</fieldset>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

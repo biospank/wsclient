@@ -22,33 +22,46 @@ module ReportsHelper
 
 		EXTENSION_MAP = {
 			'ppt' => DOC,
+			'pdf' => DOC,
 			'avi' => VIDEO,
 			'txt' => TEXT,
 			'doc' => DOC,
 			'mp3' => SONG,
-			'bin' => BIN
+			'bin' => BIN,
+			'mp4' => VIDEO
 		}
 	end
 	
   def group_by_type(files)
     grouped_items = []
     
-    files.group_by { |element| FILE::EXTENSION_MAP[element["extension"]] }.each do |extension, items|
-      grouped_items << [items.length, extension, items.sum {|element| element.size}.kilobytes()]
+		# api doc mention file extension property but it doesn't return any such propergty
+		# so i have to split 'file_name' property to access file extension
+    files.group_by { |element| get_file_extension(element["file_name"]) }.each do |extension, items|
+			size = items.sum {|element| element["size"]}
+			gravity = gravity_for(extension, size)
+			
+      grouped_items << [
+				items.length, 
+				extension, 
+				(size + gravity),
+				gravity
+			]
     end
     
     grouped_items
   end
 	
-	def gravity_for(file)
-		extension = FILE::EXTENSION_MAP[file["extension"]]
+	def gravity_for(extension, size)
 		gravity = FILE::GRAVITY_MAP[extension] || 1
 		
-		weight = file["size"].kilobytes() * gravity
+		weight = ((size / Numeric::KILOBYTE) * (gravity == 1 ? gravity : (gravity - 1))).round(2)
 		
 		weight += (FILE::FIXED_GRAVITY_MAP[extension] || 0)
 		
-		weight
-		
+	end
+	
+	def get_file_extension(file_name)
+		FILE::EXTENSION_MAP[file_name.split('.').last] || "Uncategorized"
 	end
 end

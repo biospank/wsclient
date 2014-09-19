@@ -22,7 +22,7 @@ RSpec.describe ReportsController, :type => :controller do
     context "authorized user" do
       it "assigns all files to @report" do
         get :index, {}, valid_session
-        expect(assigns(:report)).to be_an_instance_of(Array)
+        expect(assigns(:reports)).to be_an_instance_of(Array)
       end
 
       it "render template 'index'" do

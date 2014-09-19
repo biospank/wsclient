@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root :to => "reports#index"
+  root :to => "sessions#new"
 
   resources :reports, only: [:index, :show]
 

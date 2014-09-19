@@ -1,25 +1,45 @@
-<h1>Listing reports</h1>
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 style="border-bottom: 1px solid #c5c5c5;">
+						<i class="glyphicon glyphicon-hdd">
+						</i>
+						Files on your disk
+					</h4>
+				</div>
+				<div class="panel-body">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Type</th>
+								<th>Weight</th>
+							</tr>
+						</thead>
 
-<table>
-  <thead>
-    <tr>
-      <th>Index</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+						<tbody>
+							<% @reports.each do |report| %>
+								<tr>
+									<td><%= report[0] %></td>
+									<td><%= report[1] %></td>
+									<td><%= number_to_human_size(report[2], precision: 2) %></td>
+								</tr>
+							<% end %>
+						</tbody>
+					</table>
+				</div>
+				<div class="panel-footer">
+					<div>
+						Total: <%= number_to_human_size(@reports.sum {|item| item[2]}, precision: 2) %>
+					</div>
+					<div>
+						Add. gravity: <%= number_to_human_size(@reports.sum {|item| item[3]}, precision: 2) %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
-  <tbody>
-    <% @reports.each do |report| %>
-      <tr>
-        <td><%= report.index %></td>
-        <td><%= link_to 'Show', report %></td>
-        <td><%= link_to 'Edit', edit_report_path(report) %></td>
-        <td><%= link_to 'Destroy', report, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Report', new_report_path %>

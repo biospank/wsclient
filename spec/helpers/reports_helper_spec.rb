@@ -6,12 +6,12 @@ require 'rails_helper'
 describe ReportsHelper do
 	describe "group_by_type" do
 		items = [
-		 {"name" => 'file_1', "size" => 1601, "extension" => 'ppt'},
-		 {"name" => 'file_2', "size" => 3501, "extension" => 'ppt'},
-		 {"name" => 'file_3', "size" => 44156333, "extension" => 'avi'},
-		 {"name" => 'file_4', "size" => 83883772, "extension" => 'avi'},
-		 {"name" => 'file_5', "size" => 1928, "extension" => 'txt'},
-		 {"name" => 'file_6', "size" => 27665, "extension" => 'doc'}
+		 {"name" => 'file_1', "size" => 1601, "file_name" => 'file_1.ppt'},
+		 {"name" => 'file_2', "size" => 3501, "file_name" => 'file_2.ppt'},
+		 {"name" => 'file_3', "size" => 44156333, "file_name" => 'file_3.avi'},
+		 {"name" => 'file_4', "size" => 83883772, "file_name" => 'file_4.avi'},
+		 {"name" => 'file_5', "size" => 1928, "file_name" => 'file_5.txt'},
+		 {"name" => 'file_6', "size" => 27665, "file_name" => 'file_6.doc'}
 		]
 
 		it "group array items by file type" do
@@ -22,33 +22,33 @@ describe ReportsHelper do
 
 	describe "gravity_for" do
 		it "'Documents' to be its size in kilobytes * 1.1" do
-			file = {"name" => 'file_1', "size" => 1601, "extension" => 'ppt'}
-			weight = helper.gravity_for file
-			expect(weight).to be((file["size"].kilobytes() * 1.1))
+			file = {"name" => 'file_1', "size" => 1601, "file_name" => 'file_1.ppt'}
+			weight = helper.gravity_for ReportsHelper::FILE::EXTENSION_MAP[file["file_name"].split('.').last], file['size']
+			expect(weight).to eq(((file["size"] / Numeric::KILOBYTE) * 0.1).round(2))
 		end
 
 		it "'Videos' to be its size in kilobytes * 1.4" do
-			file = {"name" => 'video', "size" => 39938387, "extension" => 'avi'}
-			weight = helper.gravity_for file
-			expect(weight).to be((file["size"].kilobytes() * 1.4))
+			file = {"name" => 'video', "size" => 39938387, "file_name" => 'video.avi'}
+			weight = helper.gravity_for ReportsHelper::FILE::EXTENSION_MAP[file["file_name"].split('.').last], file['size']
+			expect(weight).to eq(((file["size"] / Numeric::KILOBYTE) * 0.4).round(2))
 		end
 
 		it "'Songs' to be its size in kilobytes * 1.2" do
-			file = {"name" => 'song', "size" => 37736635, "extension" => 'mp3'}
-			weight = helper.gravity_for file
-			expect(weight).to be((file["size"].kilobytes() * 1.2))
+			file = {"name" => 'song', "size" => 37736635, "file_name" => 'song.mp3'}
+			weight = helper.gravity_for ReportsHelper::FILE::EXTENSION_MAP[file["file_name"].split('.').last], file['size']
+			expect(weight).to eq(((file["size"] / Numeric::KILOBYTE) * 0.2).round(2))
 		end
 
 		it "'Text' to be its size in kilobytes + 100" do
-			file = {"name" => 'text', "size" => 552442, "extension" => 'txt'}
-			weight = helper.gravity_for file
-			expect(weight).to be((file["size"].kilobytes() + 100))
+			file = {"name" => 'text', "size" => 552442, "file_name" => 'text.txt'}
+			weight = helper.gravity_for ReportsHelper::FILE::EXTENSION_MAP[file["file_name"].split('.').last], file['size']
+			expect(weight).to eq(((file["size"] / Numeric::KILOBYTE) + 100).round(2))
 		end
 
 		it "'Others' to be its size in kilobytes * 1" do
-			file = {"name" => 'bin', "size" => 37726235, "extension" => 'rb'}
-			weight = helper.gravity_for file
-			expect(weight).to be((file["size"].kilobytes() * 1))
+			file = {"name" => 'unclassified', "size" => 37726235, "file_name" => 'unclassified.rb'}
+			weight = helper.gravity_for ReportsHelper::FILE::EXTENSION_MAP[file["file_name"].split('.').last], file['size']
+			expect(weight).to eq(((file["size"] / Numeric::KILOBYTE) * 1).round(2))
 		end
 	end
 end
