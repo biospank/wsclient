@@ -6,5 +6,7 @@ This is a minimal implementation of Workshare's client api
   to launch rspec test you need to configure application.yml with following env variables
 
   WORKSHARE_APP_UID: <app_uid>
+
   WORKSHARE_APP_KEY: <app_key>
+
   WORKSHARE_APP_SECRET: <app_secret>
