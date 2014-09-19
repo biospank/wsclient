@@ -31,7 +31,10 @@ gem 'faraday-cookie_jar'
 
 gem 'figaro'
 
+gem 'rails_12factor', group: :production
+
 group :development do
+  gem 'sqlite3'
   gem 'better_errors'
   gem 'pry-rails'
 #  gem 'binding_of_caller'
